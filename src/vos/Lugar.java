@@ -12,7 +12,11 @@ public class Lugar
 	
 	private boolean abierto;
 	 
-	private int capacidad;
+	private int capacidadVip;
+	
+	private int capacidadPlatea;
+	
+	private int capacidadGeneral;
 	
 	private boolean incapacitados;
 	
@@ -30,14 +34,16 @@ public class Lugar
 	
 	private ArrayList<Funcion> funciones;
 
-	public Lugar(int id, String nombre, boolean abierto, int capacidad, boolean incapacitados, int horaApertura,
+	public Lugar(int id, String nombre, boolean abierto, int capacidadVip, int capacidadGeneral, int capacidadPlatea, boolean incapacitados, int horaApertura,
 			int horaCierre, ArrayList<String> condicionesTecnicas, String tipoSilleteria, boolean proteccionLluvia,
 			boolean numerada, ArrayList<Funcion> funciones) 
 	{
 		this.id = id;
 		this.nombre = nombre;
 		this.abierto = abierto;
-		this.capacidad = capacidad;
+		this.capacidadVip = capacidadVip;
+		this.capacidadPlatea = capacidadPlatea;
+		this.capacidadGeneral = capacidadGeneral;
 		this.incapacitados = incapacitados;
 		this.horaApertura = horaApertura;
 		this.horaCierre = horaCierre;
@@ -72,12 +78,28 @@ public class Lugar
 		this.abierto = abierto;
 	}
 
-	public int getCapacidad() {
-		return capacidad;
+	public int getCapacidadVip() {
+		return capacidadVip;
 	}
 
-	public void setCapacidad(int capacidad) {
-		this.capacidad = capacidad;
+	public void setCapacidadVip(int capacidadVip) {
+		this.capacidadVip = capacidadVip;
+	}
+
+	public int getCapacidadPlatea() {
+		return capacidadPlatea;
+	}
+
+	public void setCapacidadPlatea(int capacidadPlatea) {
+		this.capacidadPlatea = capacidadPlatea;
+	}
+
+	public int getCapacidadGeneral() {
+		return capacidadGeneral;
+	}
+
+	public void setCapacidadGeneral(int capacidadGeneral) {
+		this.capacidadGeneral = capacidadGeneral;
 	}
 
 	public boolean isIncapacitados() {

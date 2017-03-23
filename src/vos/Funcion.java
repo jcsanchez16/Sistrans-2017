@@ -15,17 +15,50 @@ public class Funcion
 	
 	private int espectaculo;
 	
-	private ArrayList<Integer> clientes;
+	private ArrayList<Boleta> boletas;
+	
+	private double precioVip;
+	
+	private double precioPlatea;
+	
+	private double precioGeneral;
 
 	public Funcion(Date fecha, boolean realizada, String festival, int lugar, int espectaculo,
-			ArrayList<Integer> clientes) {
-		super();
+			ArrayList<Boleta> boletas, double precioVip, double precioPlatea, double precioGeneral) 
+	{
 		this.fecha = fecha;
 		this.realizada = realizada;
 		this.festival = festival;
 		this.lugar = lugar;
 		this.espectaculo = espectaculo;
-		this.clientes = clientes;
+		this.boletas = boletas;
+		this.precioVip =precioVip;
+		this.precioPlatea = precioPlatea;
+		this.precioGeneral = precioGeneral;
+	}
+
+	public double getPrecioVip() {
+		return precioVip;
+	}
+
+	public void setPrecioVip(double precioVip) {
+		this.precioVip = precioVip;
+	}
+
+	public double getPrecioPlatea() {
+		return precioPlatea;
+	}
+
+	public void setPrecioPlatea(double precioPlatea) {
+		this.precioPlatea = precioPlatea;
+	}
+
+	public double getPrecioGeneral() {
+		return precioGeneral;
+	}
+
+	public void setPrecioGeneral(double precioGeneral) {
+		this.precioGeneral = precioGeneral;
 	}
 
 	public Date getFecha() {
@@ -68,12 +101,12 @@ public class Funcion
 		this.espectaculo = espectaculo;
 	}
 
-	public ArrayList<Integer> getClientes() {
-		return clientes;
+	public ArrayList<Boleta> getClientes() {
+		return boletas;
 	}
 
-	public void setClientes(ArrayList<Integer> clientes) {
-		this.clientes = clientes;
+	public void setClientes(ArrayList<Boleta> boletas) {
+		this.boletas = boletas;
 	}
 
 }

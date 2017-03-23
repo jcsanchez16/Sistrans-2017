@@ -1,5 +1,7 @@
 package vos;
 
+import java.util.ArrayList;
+
 public class Cliente extends Usuario
 {
 	private int edad;
@@ -7,13 +9,24 @@ public class Cliente extends Usuario
 	private String preferenciaGenero;
 	
 	private int preferenciaSitio;
+	
+	private ArrayList<Boleta> boletas;
 
 	public Cliente(String nombre, int id, String correo, String rol, int companiaTeatro, int edad,
-			String preferenciaGenero, int preferenciaSitio) {
+			String preferenciaGenero, int preferenciaSitio, ArrayList<Boleta> boletas) {
 		super(nombre, id, correo, rol, companiaTeatro);
 		this.edad = edad;
 		this.preferenciaGenero = preferenciaGenero;
 		this.preferenciaSitio = preferenciaSitio;
+		this.boletas = boletas;
+	}
+
+	public ArrayList<Boleta> getBoletas() {
+		return boletas;
+	}
+
+	public void setBoletas(ArrayList<Boleta> boletas) {
+		this.boletas = boletas;
 	}
 
 	public int getEdad() {

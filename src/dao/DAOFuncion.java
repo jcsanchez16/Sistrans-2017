@@ -10,12 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
-
-import vos.Aerolinea;
-import vos.Avion;
-import vos.Espectaculo;
 import vos.Funcion;
-import vos.Vuelo;
 
 public class DAOFuncion {
 
@@ -31,14 +26,12 @@ public class DAOFuncion {
 	
 	private ArrayList<Funcion> funciones;
 	
-	private DAOAviones aviones;
-	private DAOVuelos vuelos;
+	private DAOFuncionU funcionU;
 
 	public DAOFuncion(String conectionData) {
 		initConnectionData(conectionData);
 		funciones = new ArrayList<Funcion>();
-		aviones = new DAOAviones(conectionData);
-		vuelos = new DAOVuelos(conectionData);
+		funcionU = new DAOFuncionU(conectionData);
 	}
 
 	private void initConnectionData(String conectionData) {
@@ -86,17 +79,13 @@ public class DAOFuncion {
 			while (rs.next()) 	
 			{
 				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO"));
-				Date fecha = Date.valueOf(rs.getString("FECHA"));
+				String fec = rs.getString("FECHA");
+				Date fecha = Date.valueOf(fec);
 				int idL = Integer.parseInt(rs.getString("ID_LUGAR"));
 				boolean rea = Integer.parseInt(rs.getString("REALIZADA"))==0? true:false;
-				String codigo = rs.getString("CODIGO");
-				ArrayList<Avion> avi= aviones.buscarAvionesPorAero(OACI);
-				ArrayList<String> cri =new ArrayList<>();
-				ArrayList<String> data =new ArrayList<>();
-				cri.add("AEROLINEA");
-				data.add(OACI);
-				ArrayList<Vuelo> vuel = vuelos.buscarVuelosPorCriterio(cri,data);
-				aerolineas.add(new Aerolinea(pais, nombre, OACI, codigo, avi,vuel));
+				String fest = rs.getString("FESTIVAL");
+				ArrayList<Integer> clie = funcionU.buscarUsuariosPorFuncion(fec,idE);
+				funciones.add(new Funcion(fecha, rea, fest, idL, idE, clie) );
 			}
 
 		} catch (SQLException e) {
@@ -116,31 +105,29 @@ public class DAOFuncion {
 			if (this.conexion != null)
 				closeConnection(this.conexion);
 		}
-		return aerolineas;
+		return funciones;
 	}
 
-	public Aerolinea buscarAerolineasPK(String OACI) throws Exception {
+	public Funcion buscarFuncionPK(String fecha, int id) throws Exception {
 		PreparedStatement prepStmt = null;
-		Aerolinea aerolineas = null;
+		Funcion funcion = null;
 
 		try {
 			establecerConexion();
-			String sql = "SELECT * FROM AEROLINEAS WHERE OACI ='" +OACI + "'";
+			String sql = "SELECT * FROM FUNCION WHERE ID_ESPECTACULO ='" +id + "' AND FECHA ='"+fecha+"'";
 			prepStmt = conexion.prepareStatement(sql);
 			ResultSet rs = prepStmt.executeQuery();
 
 			while (rs.next()) 
 			{
-				String pais = rs.getString("PAIS_RADICACION");
-				String nombre = rs.getString("NOMBRE");
-				String codigo = rs.getString("CODIGO");
-				ArrayList<Avion> avi= aviones.buscarAvionesPorAero(OACI);
-				ArrayList<String> cri =new ArrayList<>();
-				ArrayList<String> data =new ArrayList<>();
-				cri.add("AEROLINEA");
-				data.add(OACI);
-				ArrayList<Vuelo> vuel = vuelos.buscarVuelosPorCriterio(cri,data);
-				aerolineas=(new Aerolinea(pais, nombre, OACI, codigo, avi,vuel));
+				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO"));
+				String fec = rs.getString("FECHA");
+				Date fech = Date.valueOf(fec);
+				int idL = Integer.parseInt(rs.getString("ID_LUGAR"));
+				boolean rea = Integer.parseInt(rs.getString("REALIZADA"))==0? true:false;
+				String fest = rs.getString("FESTIVAL");
+				ArrayList<Integer> clie = funcionU.buscarUsuariosPorFuncion(fec,idE);
+				funcion=new Funcion(fech, rea, fest, idL, idE, clie) ;
 			}
 
 		} catch (SQLException e) {
@@ -160,7 +147,7 @@ public class DAOFuncion {
 			if (this.conexion != null)
 				closeConnection(this.conexion);
 		}
-		return aerolineas;
+		return funcion;
 	}
 
 	
