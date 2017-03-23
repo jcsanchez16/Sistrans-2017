@@ -3,6 +3,7 @@ package dao;
 import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import vos.Boleta;
 import vos.Cliente;
 
 public class DAOBoleta {
@@ -23,10 +25,6 @@ public class DAOBoleta {
 	private String url;
 
 	private String driver;
-	
-	private DAOFuncion funcion;
-	
-	private DAOUsuario usuario;
 	
 	private String conectionData;
 
@@ -69,21 +67,23 @@ public class DAOBoleta {
 	}
 
 	
-	public ArrayList<Cliente> buscarBoletasPorCliente(int idC) throws Exception {
+	public ArrayList<Boleta> buscarBoletasPorCliente(int idC) throws Exception {
 		
 		PreparedStatement prepStmt = null;
-		ArrayList<Boleta> b = new ArrayList<Cliente>();
+		ArrayList<Boleta> b = new ArrayList<Boleta>();
 
 		try {
 			establecerConexion();
-			String sql = "SELECT * FROM BOLETAS WHERE ID_USUARIO ='" + idc + "'";
+			String sql = "SELECT * FROM BOLETAS WHERE ID_USUARIO ='" + idC + "'";
 			prepStmt = conexion.prepareStatement(sql);
 			ResultSet rs = prepStmt.executeQuery();
 
 			while (rs.next()) {
-				String tip = rs.getString("TIPO_IDENTIFICACION");
-				int id = Integer.parseInt(rs.getString("ID_CLIENTE"));
-				c.add(cliente.buscarClientePK(id, tip));
+				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO_FUNCION"));
+				String loc = rs.getString("LOCALIDAD");
+				int idU = Integer.parseInt(rs.getString("ID_USUARIO"));
+				Date fec = Date.valueOf(rs.getString("FECHA_FUNCION"));
+				b.add(new Boleta(idU, idE, fec, loc));
 			}
 
 		} catch (SQLException e) {
@@ -103,24 +103,25 @@ public class DAOBoleta {
 			if (this.conexion != null)
 				closeConnection(this.conexion);
 		}
-		return c;
+		return b;
 	}
-	public ArrayList<String> buscarReservaPorCliente(int identificacion,String tip) throws Exception 
-	{
+public ArrayList<Boleta> buscarBoletasPorFuncion(int idE, String fecha) throws Exception {
+		
 		PreparedStatement prepStmt = null;
-		ArrayList<String> v = new ArrayList<String>();
-		vuelos = new DAOVuelos(conectionData);
+		ArrayList<Boleta> b = new ArrayList<Boleta>();
 
 		try {
 			establecerConexion();
-			String sql = "SELECT * FROM RESERVAS WHERE ID_CLIENTE ='" + identificacion + "' and TIPO_IDENTIFICACION ='" + tip + "'";
+			String sql = "SELECT * FROM BOLETAS WHERE ID_ESPECTACULO_FUNCION ='" + idE + "' AND FECHA_FUNCION ='"+fecha+"'";
 			prepStmt = conexion.prepareStatement(sql);
 			ResultSet rs = prepStmt.executeQuery();
 
 			while (rs.next()) {
-				String aero = rs.getString("AEROLINEA");
-				int id = Integer.parseInt(rs.getString("ID_VUELO"));
-				v.add(aero+";"+id);
+				int idEs = Integer.parseInt(rs.getString("ID_ESPECTACULO_FUNCION"));
+				String loc = rs.getString("LOCALIDAD");
+				int idU = Integer.parseInt(rs.getString("ID_USUARIO"));
+				Date fec = Date.valueOf(rs.getString("FECHA_FUNCION"));
+				b.add(new Boleta(idU, idEs, fec, loc));
 			}
 
 		} catch (SQLException e) {
@@ -140,6 +141,6 @@ public class DAOBoleta {
 			if (this.conexion != null)
 				closeConnection(this.conexion);
 		}
-		return v;
+		return b;
 	}
 }

@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
+
+import vos.Boleta;
 import vos.Funcion;
 
 public class DAOFuncion {
@@ -26,12 +28,12 @@ public class DAOFuncion {
 	
 	private ArrayList<Funcion> funciones;
 	
-	private DAOFuncionU funcionU;
+	private DAOBoleta boleta;
 
 	public DAOFuncion(String conectionData) {
 		initConnectionData(conectionData);
 		funciones = new ArrayList<Funcion>();
-		funcionU = new DAOFuncionU(conectionData);
+		boleta = new DAOBoleta(conectionData);
 	}
 
 	private void initConnectionData(String conectionData) {
@@ -84,8 +86,11 @@ public class DAOFuncion {
 				int idL = Integer.parseInt(rs.getString("ID_LUGAR"));
 				boolean rea = Integer.parseInt(rs.getString("REALIZADA"))==0? true:false;
 				String fest = rs.getString("FESTIVAL");
-				ArrayList<Integer> clie = funcionU.buscarUsuariosPorFuncion(fec,idE);
-				funciones.add(new Funcion(fecha, rea, fest, idL, idE, clie) );
+				double pV = Double.parseDouble(rs.getString("PRECIO_VIP"));
+				double pP = Double.parseDouble(rs.getString("PRECIO_PLATEA"));
+				double pG = Double.parseDouble(rs.getString("PRECIO_GENERAL"));
+				ArrayList<Boleta> bole = boleta.buscarBoletasPorFuncion(idE, fec);
+				funciones.add(new Funcion(fecha, rea, fest, idL, idE, bole, pV, pP,pG) );
 			}
 
 		} catch (SQLException e) {
@@ -122,12 +127,15 @@ public class DAOFuncion {
 			{
 				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO"));
 				String fec = rs.getString("FECHA");
-				Date fech = Date.valueOf(fec);
+				Date fechas = Date.valueOf(fec);
 				int idL = Integer.parseInt(rs.getString("ID_LUGAR"));
 				boolean rea = Integer.parseInt(rs.getString("REALIZADA"))==0? true:false;
 				String fest = rs.getString("FESTIVAL");
-				ArrayList<Integer> clie = funcionU.buscarUsuariosPorFuncion(fec,idE);
-				funcion=new Funcion(fech, rea, fest, idL, idE, clie) ;
+				double pV = Double.parseDouble(rs.getString("PRECIO_VIP"));
+				double pP = Double.parseDouble(rs.getString("PRECIO_PLATEA"));
+				double pG = Double.parseDouble(rs.getString("PRECIO_GENERAL"));
+				ArrayList<Boleta> bole = boleta.buscarBoletasPorFuncion(idE, fec);
+				funcion=new Funcion(fechas, rea, fest, idL, idE, bole, pV, pP,pG) ;
 			}
 
 		} catch (SQLException e) {
