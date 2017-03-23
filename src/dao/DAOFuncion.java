@@ -88,6 +88,7 @@ public class DAOFuncion {
 				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO"));
 				Date fecha = Date.valueOf(rs.getString("FECHA"));
 				int idL = Integer.parseInt(rs.getString("ID_LUGAR"));
+				boolean rea = Integer.parseInt(rs.getString("REALIZADA"))==0? true:false;
 				String codigo = rs.getString("CODIGO");
 				ArrayList<Avion> avi= aviones.buscarAvionesPorAero(OACI);
 				ArrayList<String> cri =new ArrayList<>();
