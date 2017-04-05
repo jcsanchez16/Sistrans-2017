@@ -38,5 +38,20 @@ public class LugarServices
 		}
 		return Response.status(200).entity(a).build();
 	}
+	@GET
+	@Path("/get")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response GetLugares(@QueryParam("id") int id) {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+	Lugar a = null;
+		try {
+			a = master.darLugaresPk(id);
+		} catch (Exception e) {
+			String temp = null;
+			temp=e.getMessage();
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
 	
 	}

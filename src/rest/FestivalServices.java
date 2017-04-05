@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import master.FestAndesMaster;
 import vos.Festival;
+import vos.Lugar;
 @Path("festival")
 public class FestivalServices 
 {
@@ -34,6 +35,21 @@ public class FestivalServices
 		} catch (Exception e) {
 			ArrayList<String> temp = new ArrayList<String>();
 			temp.add(e.getMessage());
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
+	@GET
+	@Path("/get")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response GetFestivales(@QueryParam("nombre") String nombre) {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+	Festival a = null;
+		try {
+			a = master.darFestivalesPk(nombre);
+		} catch (Exception e) {
+			String temp = null;
+			temp=e.getMessage();
 			return Response.status(500).entity(temp).build();
 		}
 		return Response.status(200).entity(a).build();

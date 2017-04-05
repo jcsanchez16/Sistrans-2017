@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import master.FestAndesMaster;
 import vos.CompaniaTeatro;
+import vos.Lugar;
 @Path("compania")
 public class CompaniaServices 
 {
@@ -34,6 +35,21 @@ public class CompaniaServices
 		} catch (Exception e) {
 			ArrayList<String> temp = new ArrayList<String>();
 			temp.add(e.getMessage());
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
+	@GET
+	@Path("/get")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response GetCompanias(@QueryParam("id") int id) {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+	CompaniaTeatro a = null;
+		try {
+			a = master.darCompaniasPk(id);
+		} catch (Exception e) {
+			String temp = null;
+			temp=e.getMessage();
 			return Response.status(500).entity(temp).build();
 		}
 		return Response.status(200).entity(a).build();

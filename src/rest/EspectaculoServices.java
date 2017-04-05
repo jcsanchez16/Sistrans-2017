@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import master.FestAndesMaster;
 import vos.Espectaculo;
+import vos.Lugar;
 @Path("espectaculo")
 public class EspectaculoServices 
 {
@@ -38,5 +39,19 @@ public class EspectaculoServices
 		}
 		return Response.status(200).entity(a).build();
 	}
-	
+	@GET
+	@Path("/get")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response GetEspectaculos(@QueryParam("id") int id) {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+	Espectaculo a = null;
+		try {
+			a = master.darEspectaculosPk(id);
+		} catch (Exception e) {
+			String temp = null;
+			temp=e.getMessage();
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
 	}

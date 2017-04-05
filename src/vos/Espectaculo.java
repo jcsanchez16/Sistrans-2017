@@ -33,10 +33,10 @@ public class Espectaculo
 	
 	private ArrayList<Funcion> funciones;
 	
-	private ArrayList<Integer> companias;
+	private ArrayList<CompaniaTeatro> companias;
 	
 	public Espectaculo(int id, String nombre, int duracion, ArrayList<String> requerimientos, String idioma, double costoProduccion, String descripcion, 
-			ArrayList<String> categorias, boolean tipoParticipacion, String traduccion, String publico, ArrayList<Funcion> funciones, ArrayList<Integer> companias)
+			ArrayList<String> categorias, boolean tipoParticipacion, String traduccion, String publico, ArrayList<Funcion> funciones, ArrayList<CompaniaTeatro> companias)
 	{
 		this.id=id;
 		this.nombre = nombre;
@@ -50,7 +50,7 @@ public class Espectaculo
 		this.traduccion = traduccion;
 		this.publico = publico;
 		this.funciones = funciones==null? new ArrayList<Funcion>():funciones;
-		this.companias = companias == null? new ArrayList<Integer>():companias;
+		this.companias = companias == null? new ArrayList<CompaniaTeatro>():companias;
 	}	
 
 	public int getId() {
@@ -149,11 +149,11 @@ public class Espectaculo
 		this.funciones = funciones;
 	}
 
-	public ArrayList<Integer> getCompanias() {
+	public ArrayList<CompaniaTeatro> getCompanias() {
 		return companias;
 	}
 
-	public void setCompanias(ArrayList<Integer> companias) {
+	public void setCompanias(ArrayList<CompaniaTeatro> companias) {
 		this.companias = companias;
 	}
 

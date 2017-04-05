@@ -8,15 +8,17 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 
 import vos.Boleta;
 import vos.Cliente;
+import vos.Funcion;
+import vos.Lugar;
+import vos.Representante;
+import vos.Usuario;
 
-public class DAOBoleta {
+public class DAOUsuarios {
 
 	private Connection conexion;
 
@@ -27,12 +29,18 @@ public class DAOBoleta {
 	private String url;
 
 	private String driver;
-	
+
 	private String conectionData;
 
-	public DAOBoleta(String conectionDat) {
+	private DAOBoleta boletas;
+
+	private DAOCompanias companias;
+
+	public DAOUsuarios(String conectionDat) {
 		initConnectionData(conectionDat);
 		conectionData = conectionDat;
+		boletas = new DAOBoleta(conectionData);
+		companias = new DAOCompanias(conectionData);
 	}
 
 	private void initConnectionData(String conectionData) {
@@ -68,24 +76,25 @@ public class DAOBoleta {
 		}
 	}
 
-	
-	public ArrayList<Boleta> buscarBoletasPorCliente(int idC) throws Exception {
-		
+	public ArrayList<Cliente> darClientes() throws Exception {
 		PreparedStatement prepStmt = null;
-		ArrayList<Boleta> b = new ArrayList<Boleta>();
+		ArrayList<Cliente> clientes = new ArrayList<Cliente>();
 
 		try {
 			establecerConexion();
-			String sql = "SELECT * FROM BOLETAS WHERE ID_USUARIO ='" + idC + "'";
+			String sql = "SELECT * FROM USUARIOS WHERE ROL = '1'";
 			prepStmt = conexion.prepareStatement(sql);
 			ResultSet rs = prepStmt.executeQuery();
-
 			while (rs.next()) {
-				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO_FUNCION"));
-				String loc = rs.getString("LOCALIDAD");
-				int idU = Integer.parseInt(rs.getString("ID_USUARIO"));
-				Date fec = Date.valueOf(rs.getString("FECHA_FUNCION").substring(0, 10));
-				b.add(new Boleta(idU, idE, fec, loc));
+				int idc = Integer.parseInt(rs.getString("ID"));
+				String nombre = rs.getString("NOMBRE");
+				int rol = Integer.parseInt(rs.getString("ROL"));
+				String correo = rs.getString("CORREO");
+				int edad = Integer.parseInt(rs.getString("EDAD"));
+				String preferenciaGenero = rs.getString("PREFERENCIA_GENERO");
+				int preferenciaSitio = Integer.parseInt(rs.getString("PREFERENCIA_SITIO"));
+				ArrayList<Boleta> boletas = this.boletas.buscarBoletasPorCliente(idc);
+				clientes.add( new Cliente(nombre, idc, correo, rol, edad, preferenciaGenero, preferenciaSitio, boletas));
 			}
 
 		} catch (SQLException e) {
@@ -105,26 +114,24 @@ public class DAOBoleta {
 			if (this.conexion != null)
 				closeConnection(this.conexion);
 		}
-		return b;
+		return clientes;
 	}
-	public ArrayList<Boleta> buscarBoletasPorFuncion(int idE, Date fecha) throws Exception {
-		
+	public ArrayList<Representante> darRepresentantes() throws Exception {
 		PreparedStatement prepStmt = null;
-		ArrayList<Boleta> b = new ArrayList<Boleta>();
-		
+		ArrayList<Representante> representantes = new ArrayList<Representante>();
 
 		try {
 			establecerConexion();
-			String sql = "SELECT * FROM BOLETAS WHERE ID_ESPECTACULO_FUNCION ='" + idE + "' AND FECHA_FUNCION ='"+fecha.getDate()+"-"+(fecha.getMonth()+1)+"-"+(fecha.getYear()-100)+"'";
+			String sql = "SELECT * FROM USUARIOS WHERE ROL = '0'";
 			prepStmt = conexion.prepareStatement(sql);
 			ResultSet rs = prepStmt.executeQuery();
-
 			while (rs.next()) {
-				int idEs = Integer.parseInt(rs.getString("ID_ESPECTACULO_FUNCION"));
-				String loc = rs.getString("LOCALIDAD");
-				int idU = Integer.parseInt(rs.getString("ID_USUARIO"));
-				Date fec = Date.valueOf(rs.getString("FECHA_FUNCION").substring(0, 10));
-				b.add(new Boleta(idU, idEs, fec, loc));
+				int idc = Integer.parseInt(rs.getString("ID"));
+				String nombre = rs.getString("NOMBRE");
+				int rol = Integer.parseInt(rs.getString("ROL"));
+				String correo = rs.getString("CORREO");
+				int companiaTeatro = this.companias.buscarCompaniaPorRepresentante(idc);
+				representantes.add( new Representante(nombre, idc, correo, rol, companiaTeatro));
 			}
 
 		} catch (SQLException e) {
@@ -144,22 +151,35 @@ public class DAOBoleta {
 			if (this.conexion != null)
 				closeConnection(this.conexion);
 		}
-		return b;
+		return representantes;
 	}
-public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throws Exception {
-		
+	public Usuario buscarUsuarioPorPK(int id) throws Exception {
 		PreparedStatement prepStmt = null;
-		int contador = 0;
-		
+		Usuario usuario = null;
 
 		try {
 			establecerConexion();
-			String sql = "SELECT * FROM BOLETAS WHERE ID_ESPECTACULO_FUNCION ='" + idE + "' AND FECHA_FUNCION ='"+fecha+"' AND LOCALIDAD='"+ tipo+"'";
+			String sql = "SELECT * FROM USUARIOS WHERE ID = '"+id+"'";
 			prepStmt = conexion.prepareStatement(sql);
 			ResultSet rs = prepStmt.executeQuery();
-
 			while (rs.next()) {
-				contador++;
+				int idc = Integer.parseInt(rs.getString("ID"));
+				String nombre = rs.getString("NOMBRE");
+				int rol = Integer.parseInt(rs.getString("ROL"));
+				String correo = rs.getString("CORREO");
+				if(rol == 0)
+				{
+					int companiaTeatro = this.companias.buscarCompaniaPorRepresentante(idc);
+					usuario= new Representante(nombre, idc, correo, rol, companiaTeatro);
+				}
+				else
+				{
+					int edad = Integer.parseInt(rs.getString("EDAD"));
+					String preferenciaGenero = rs.getString("PREFERENCIA_GENERO");
+					int preferenciaSitio = Integer.parseInt(rs.getString("PREFERENCIA_SITIO"));
+					ArrayList<Boleta> boletas = this.boletas.buscarBoletasPorCliente(idc);
+					usuario = new Cliente(nombre, idc, correo, rol, edad, preferenciaGenero, preferenciaSitio, boletas);
+				}
 			}
 
 		} catch (SQLException e) {
@@ -179,40 +199,27 @@ public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throw
 			if (this.conexion != null)
 				closeConnection(this.conexion);
 		}
-		return contador;
+		return usuario;
 	}
 
-	public String añadirBoleta(int id, int espectaculo, String fecha, String tipo) throws Exception {
-		PreparedStatement prepStmt = null;	
-
-		String esp = null;
-		try {
-			DAOFuncion funciones = new DAOFuncion(conectionData);
-			DAOLugares lugares = new DAOLugares(conectionData);
-			int capacidad = 0;
-			if(tipo.equals("Platea"))
-				capacidad = lugares.buscarLugarPorPK(funciones.buscarFuncionPK(fecha, espectaculo).getLugar()).getCapacidadPlatea();
-			else if(tipo.equals("VIP"))
-				capacidad = lugares.buscarLugarPorPK(funciones.buscarFuncionPK(fecha, espectaculo).getLugar()).getCapacidadVip();
-			else if(tipo.equals("General"))
-				capacidad = lugares.buscarLugarPorPK(funciones.buscarFuncionPK(fecha, espectaculo).getLugar()).getCapacidadGeneral();
-			if(buscarBoletasPorFuncionTipo(espectaculo, fecha, tipo)+1>capacidad)
-				esp= "No hay capacidad suficiente";
-			else
+	public void cambiarPreferencias(int id, String prefe) throws SQLException {
+		PreparedStatement prepStmt = null;
+		try 
+		{
+			establecerConexion();
+			String sql = "UPDATE USUARIOS SET PREFERENCIA_GENERO ='"+prefe+"' WHERE ID = '"+id+"'";
+			prepStmt = conexion.prepareStatement(sql);
+			prepStmt.execute();
+		} 
+		catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} 
+		finally 
+		{
+			if (prepStmt != null) 
 			{
-				establecerConexion();
-				String sql = "INSERT INTO BOLETAS (ID_USUARIO, ID_ESPECTACULO_FUNCION, FECHA_FUNCION, LOCALIDAD) VALUES ('"+id+"', '"+espectaculo+"', '"+fecha+"', '"+tipo +"')";
-				prepStmt = conexion.prepareStatement(sql);
-				prepStmt.execute();
-				esp = "se realizo la reserva";
-			}
-
-		} catch (Exception e) {
-			System.err.println("SQLException in executing:");
-			e.printStackTrace();
-			throw e;
-		} finally {
-			if (prepStmt != null) {
 				try {
 					prepStmt.close();
 				} catch (SQLException exception) {
@@ -224,6 +231,5 @@ public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throw
 			if (this.conexion != null)
 				closeConnection(this.conexion);
 		}
-		return esp;
 	}
 }

@@ -8,15 +8,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 
 import vos.Boleta;
 import vos.Cliente;
+import vos.CompaniaTeatro;
+import vos.Espectaculo;
+import vos.Funcion;
+import vos.Lugar;
+import vos.Representante;
+import vos.Usuario;
 
-public class DAOBoleta {
+public class DAOCompanias {
 
 	private Connection conexion;
 
@@ -29,8 +33,12 @@ public class DAOBoleta {
 	private String driver;
 	
 	private String conectionData;
+	
+	private DAOEspectaculos espectaculos;
+	
+	private DAOUsuarios usuarios;
 
-	public DAOBoleta(String conectionDat) {
+	public DAOCompanias(String conectionDat) {
 		initConnectionData(conectionDat);
 		conectionData = conectionDat;
 	}
@@ -68,143 +76,28 @@ public class DAOBoleta {
 		}
 	}
 
-	
-	public ArrayList<Boleta> buscarBoletasPorCliente(int idC) throws Exception {
-		
+	public ArrayList<CompaniaTeatro> darCompanias() throws Exception {
 		PreparedStatement prepStmt = null;
-		ArrayList<Boleta> b = new ArrayList<Boleta>();
+		ArrayList<CompaniaTeatro> companias = new ArrayList<CompaniaTeatro>();
+		espectaculos= new DAOEspectaculos(conectionData);
+		usuarios = new DAOUsuarios(conectionData);
 
 		try {
 			establecerConexion();
-			String sql = "SELECT * FROM BOLETAS WHERE ID_USUARIO ='" + idC + "'";
+			String sql = "SELECT * FROM COMPANIAS_TEATROS";
 			prepStmt = conexion.prepareStatement(sql);
 			ResultSet rs = prepStmt.executeQuery();
-
 			while (rs.next()) {
-				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO_FUNCION"));
-				String loc = rs.getString("LOCALIDAD");
-				int idU = Integer.parseInt(rs.getString("ID_USUARIO"));
-				Date fec = Date.valueOf(rs.getString("FECHA_FUNCION").substring(0, 10));
-				b.add(new Boleta(idU, idE, fec, loc));
-			}
-
-		} catch (SQLException e) {
-			System.err.println("SQLException in executing:");
-			e.printStackTrace();
-			throw e;
-		} finally {
-			if (prepStmt != null) {
-				try {
-					prepStmt.close();
-				} catch (SQLException exception) {
-					System.err.println("SQLException in closing Stmt:");
-					exception.printStackTrace();
-					throw exception;
-				}
-			}
-			if (this.conexion != null)
-				closeConnection(this.conexion);
-		}
-		return b;
-	}
-	public ArrayList<Boleta> buscarBoletasPorFuncion(int idE, Date fecha) throws Exception {
-		
-		PreparedStatement prepStmt = null;
-		ArrayList<Boleta> b = new ArrayList<Boleta>();
-		
-
-		try {
-			establecerConexion();
-			String sql = "SELECT * FROM BOLETAS WHERE ID_ESPECTACULO_FUNCION ='" + idE + "' AND FECHA_FUNCION ='"+fecha.getDate()+"-"+(fecha.getMonth()+1)+"-"+(fecha.getYear()-100)+"'";
-			prepStmt = conexion.prepareStatement(sql);
-			ResultSet rs = prepStmt.executeQuery();
-
-			while (rs.next()) {
-				int idEs = Integer.parseInt(rs.getString("ID_ESPECTACULO_FUNCION"));
-				String loc = rs.getString("LOCALIDAD");
-				int idU = Integer.parseInt(rs.getString("ID_USUARIO"));
-				Date fec = Date.valueOf(rs.getString("FECHA_FUNCION").substring(0, 10));
-				b.add(new Boleta(idU, idEs, fec, loc));
-			}
-
-		} catch (SQLException e) {
-			System.err.println("SQLException in executing:");
-			e.printStackTrace();
-			throw e;
-		} finally {
-			if (prepStmt != null) {
-				try {
-					prepStmt.close();
-				} catch (SQLException exception) {
-					System.err.println("SQLException in closing Stmt:");
-					exception.printStackTrace();
-					throw exception;
-				}
-			}
-			if (this.conexion != null)
-				closeConnection(this.conexion);
-		}
-		return b;
-	}
-public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throws Exception {
-		
-		PreparedStatement prepStmt = null;
-		int contador = 0;
-		
-
-		try {
-			establecerConexion();
-			String sql = "SELECT * FROM BOLETAS WHERE ID_ESPECTACULO_FUNCION ='" + idE + "' AND FECHA_FUNCION ='"+fecha+"' AND LOCALIDAD='"+ tipo+"'";
-			prepStmt = conexion.prepareStatement(sql);
-			ResultSet rs = prepStmt.executeQuery();
-
-			while (rs.next()) {
-				contador++;
-			}
-
-		} catch (SQLException e) {
-			System.err.println("SQLException in executing:");
-			e.printStackTrace();
-			throw e;
-		} finally {
-			if (prepStmt != null) {
-				try {
-					prepStmt.close();
-				} catch (SQLException exception) {
-					System.err.println("SQLException in closing Stmt:");
-					exception.printStackTrace();
-					throw exception;
-				}
-			}
-			if (this.conexion != null)
-				closeConnection(this.conexion);
-		}
-		return contador;
-	}
-
-	public String añadirBoleta(int id, int espectaculo, String fecha, String tipo) throws Exception {
-		PreparedStatement prepStmt = null;	
-
-		String esp = null;
-		try {
-			DAOFuncion funciones = new DAOFuncion(conectionData);
-			DAOLugares lugares = new DAOLugares(conectionData);
-			int capacidad = 0;
-			if(tipo.equals("Platea"))
-				capacidad = lugares.buscarLugarPorPK(funciones.buscarFuncionPK(fecha, espectaculo).getLugar()).getCapacidadPlatea();
-			else if(tipo.equals("VIP"))
-				capacidad = lugares.buscarLugarPorPK(funciones.buscarFuncionPK(fecha, espectaculo).getLugar()).getCapacidadVip();
-			else if(tipo.equals("General"))
-				capacidad = lugares.buscarLugarPorPK(funciones.buscarFuncionPK(fecha, espectaculo).getLugar()).getCapacidadGeneral();
-			if(buscarBoletasPorFuncionTipo(espectaculo, fecha, tipo)+1>capacidad)
-				esp= "No hay capacidad suficiente";
-			else
-			{
-				establecerConexion();
-				String sql = "INSERT INTO BOLETAS (ID_USUARIO, ID_ESPECTACULO_FUNCION, FECHA_FUNCION, LOCALIDAD) VALUES ('"+id+"', '"+espectaculo+"', '"+fecha+"', '"+tipo +"')";
-				prepStmt = conexion.prepareStatement(sql);
-				prepStmt.execute();
-				esp = "se realizo la reserva";
+				int id = Integer.parseInt(rs.getString("ID"));
+				String nombre = rs.getString("NOMBRE");
+				ArrayList<Integer> espectaculos = this.espectaculos.buscarEspectaculosPorCompania(id);
+				int repre = Integer.parseInt(rs.getString("ID_REPRESENTANTE"));
+				Representante representante = (Representante) usuarios.buscarUsuarioPorPK(repre);
+				java.sql.Date fechaSalida = Date.valueOf(rs.getString("FECHA_SALIDA").substring(0, 10));
+				java.sql.Date fechaLlegada = Date.valueOf(rs.getString("FECHA_LLEGADA").substring(0, 10));
+				String paginaWeb = rs.getString("PAGINA_WEB");
+				String pais = rs.getString("PAIS");
+				companias.add( new CompaniaTeatro(id, nombre, pais, paginaWeb, fechaLlegada, fechaSalida, representante, espectaculos));
 			}
 
 		} catch (Exception e) {
@@ -224,6 +117,115 @@ public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throw
 			if (this.conexion != null)
 				closeConnection(this.conexion);
 		}
-		return esp;
+		return companias;
+	}
+	public CompaniaTeatro buscarCompaniasPorPK(int id) throws Exception {
+		
+		PreparedStatement prepStmt = null;
+		CompaniaTeatro compania = null;
+
+		try {
+			establecerConexion();
+			String sql = "SELECT * FROM COMPANIAS_TEATROS WHERE ID = '" + id +"'";
+			prepStmt = conexion.prepareStatement(sql);
+			ResultSet rs = prepStmt.executeQuery();
+			espectaculos= new DAOEspectaculos(conectionData);
+			usuarios = new DAOUsuarios(conectionData);
+			while (rs.next()) {
+				int idc = Integer.parseInt(rs.getString("ID"));
+				String nombre = rs.getString("NOMBRE");
+				ArrayList<Integer> espectaculos = this.espectaculos.buscarEspectaculosPorCompania(id);
+				Representante representante = (Representante) usuarios.buscarUsuarioPorPK(Integer.parseInt(rs.getString("ID_REPRESENTANTE")));
+				java.sql.Date fechaSalida = Date.valueOf(rs.getString("FECHA_SALIDA").substring(0, 10));
+				java.sql.Date fechaLlegada = Date.valueOf(rs.getString("FECHA_LLEGADA").substring(0, 10));
+				String paginaWeb = rs.getString("PAGINA_WEB");
+				String pais = rs.getString("PAIS");
+				compania = new CompaniaTeatro(idc, nombre, pais, paginaWeb, fechaLlegada, fechaSalida, representante, espectaculos);
+			}
+
+		} catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+		return compania;
+	}
+	public ArrayList<CompaniaTeatro> buscarCompaniasPorEspectaculo(int ide) throws Exception {
+		PreparedStatement prepStmt = null;
+		ArrayList<CompaniaTeatro> companias = new ArrayList<CompaniaTeatro>();
+
+		try {
+			establecerConexion();
+			String sql = "SELECT * FROM COMPANIA_ESPECTACULOS WHERE ID_ESPECTACULO ='"+ide+"'";
+			prepStmt = conexion.prepareStatement(sql);
+			ResultSet rs = prepStmt.executeQuery();
+			while (rs.next()) {
+				int id = Integer.parseInt(rs.getString("ID_COMPANIA"));
+				companias.add(buscarCompaniasPorPK(id));
+			}
+
+		} catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+		return companias;
+	}
+	public int buscarCompaniaPorRepresentante(int id) throws Exception {
+		
+		PreparedStatement prepStmt = null;
+		int compania = -1;
+
+		try {
+			establecerConexion();
+			String sql = "SELECT * FROM COMPANIAS_TEATROS WHERE ID_REPRESENTANTE = '" + id +"'";
+			prepStmt = conexion.prepareStatement(sql);
+			ResultSet rs = prepStmt.executeQuery();
+			while (rs.next()) {
+				compania = Integer.parseInt(rs.getString("ID"));
+				}
+
+		} catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+		return compania;
 	}
 }

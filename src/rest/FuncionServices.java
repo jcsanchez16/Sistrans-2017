@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import master.FestAndesMaster;
 import vos.Funcion;
+import vos.Lugar;
 @Path("funcion")
 public class FuncionServices 
 {
@@ -34,6 +35,21 @@ public class FuncionServices
 		} catch (Exception e) {
 			ArrayList<String> temp = new ArrayList<String>();
 			temp.add(e.getMessage());
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
+	@GET
+	@Path("/get")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response GetFuncion(@QueryParam("idE") int idE, @QueryParam("fecha") String fecha) {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+	Funcion a = null;
+		try {
+			a = master.darFuncionesPk(idE, fecha);
+		} catch (Exception e) {
+			String temp = null;
+			temp=e.getMessage();
 			return Response.status(500).entity(temp).build();
 		}
 		return Response.status(200).entity(a).build();

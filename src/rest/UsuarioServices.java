@@ -13,6 +13,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import master.FestAndesMaster;
+import vos.Cliente;
+import vos.Lugar;
+import vos.Representante;
 import vos.Usuario;
 @Path("usuario")
 public class UsuarioServices 
@@ -24,13 +27,13 @@ public class UsuarioServices
 		return context.getRealPath("WEB-INF/ConnectionData");
 	}
 	@GET
-	@Path("/list")
+	@Path("/listU")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response GetUsuarios() {
+	public Response GetClientes() {
 		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
-		ArrayList<Usuario> a = null;
+		ArrayList<Cliente> a = null;
 		try {
-			a = master.darUsuarios();
+			a = master.darClientes();
 		} catch (Exception e) {
 			ArrayList<String> temp = new ArrayList<String>();
 			temp.add(e.getMessage());
@@ -38,5 +41,34 @@ public class UsuarioServices
 		}
 		return Response.status(200).entity(a).build();
 	}
-	
+	@GET
+	@Path("/listR")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response GetRepresentantes() {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+		ArrayList<Representante> a = null;
+		try {
+			a = master.darRepresentantes();
+		} catch (Exception e) {
+			ArrayList<String> temp = new ArrayList<String>();
+			temp.add(e.getMessage());
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
+	@GET
+	@Path("/get")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response GetUsuario(@QueryParam("id") int id) {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+	Usuario a = null;
+		try {
+			a = master.darUsuariosPk(id);
+		} catch (Exception e) {
+			String temp = null;
+			temp=e.getMessage();
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
 }

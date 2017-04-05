@@ -12,9 +12,9 @@ public class Cliente extends Usuario
 	
 	private ArrayList<Boleta> boletas;
 
-	public Cliente(String nombre, int id, String correo, String rol, int companiaTeatro, int edad,
+	public Cliente(String nombre, int id, String correo, int rol, int edad,
 			String preferenciaGenero, int preferenciaSitio, ArrayList<Boleta> boletas) {
-		super(nombre, id, correo, rol, companiaTeatro);
+		super(nombre, id, correo, rol);
 		this.edad = edad;
 		this.preferenciaGenero = preferenciaGenero;
 		this.preferenciaSitio = preferenciaSitio;

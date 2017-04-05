@@ -17,12 +17,12 @@ public class CompaniaTeatro
 	
 	private Date fechaSalida;
 	
-	private Usuario representante;
+	private Representante representante;
 	
-	private ArrayList<Espectaculo> espectaculos;
+	private ArrayList<Integer> espectaculos;
 
 	public CompaniaTeatro(int id, String nombre, String pais, String paginaWeb, Date fechaLlegada, Date fechaSalida,
-			Usuario representante, ArrayList<Espectaculo> espectaculos) 
+			Representante representante, ArrayList<Integer> espectaculos) 
 	{
 		this.id = id;
 		this.nombre = nombre;
@@ -31,7 +31,7 @@ public class CompaniaTeatro
 		this.fechaLlegada = fechaLlegada;
 		this.fechaSalida = fechaSalida;
 		this.representante = representante;
-		this.espectaculos = espectaculos == null? new ArrayList<Espectaculo>():espectaculos;
+		this.espectaculos = espectaculos == null? new ArrayList<Integer>():espectaculos;
 	}
 
 	public int getId() {
@@ -82,19 +82,19 @@ public class CompaniaTeatro
 		this.fechaSalida = fechaSalida;
 	}
 
-	public Usuario getRepresentante() {
+	public Representante getRepresentante() {
 		return representante;
 	}
 
-	public void setRepresentante(Usuario representante) {
+	public void setRepresentante(Representante representante) {
 		this.representante = representante;
 	}
 
-	public ArrayList<Espectaculo> getEspectaculos() {
+	public ArrayList<Integer> getEspectaculos() {
 		return espectaculos;
 	}
 
-	public void setEspectaculos(ArrayList<Espectaculo> espectaculos) {
+	public void setEspectaculos(ArrayList<Integer> espectaculos) {
 		this.espectaculos = espectaculos;
 	}
 

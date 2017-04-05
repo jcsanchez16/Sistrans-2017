@@ -13,16 +13,13 @@ public class Usuario {
 	private String correo;
 	
 	private String rol;
-	
-	private int companiaTeatro;
 
-	public Usuario(String nombre, int id, String correo, String rol, int companiaTeatro) 
+	public Usuario(String nombre, int id, String correo, int rol) 
 	{
 		this.nombre = nombre;
 		this.id = id;
 		this.correo = correo;
-		this.rol = rol;		
-		this.companiaTeatro = rol.equals(REPRESENTANTE)?companiaTeatro:null;
+		this.rol = rol ==1 ? CLIENTE : REPRESENTANTE;		
 	}
 
 	public String getNombre() {
@@ -55,14 +52,6 @@ public class Usuario {
 
 	public void setRol(String rol) {
 		this.rol = rol;
-	}
-
-	public int getCompaniaTeatro() {
-		return companiaTeatro;
-	}
-
-	public void setCompaniaTeatro(int companiaTeatro) {
-		this.companiaTeatro = companiaTeatro;
 	}
 
 }

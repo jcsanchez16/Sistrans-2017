@@ -81,7 +81,7 @@ public class DAOFuncion {
 			while (rs.next()) 	
 			{
 				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO"));
-				String fec = rs.getString("FECHA");
+				String fec = rs.getString("FECHA").substring(0, 10);
 				Date fecha = Date.valueOf(fec);
 				int idL = Integer.parseInt(rs.getString("ID_LUGAR"));
 				boolean rea = Integer.parseInt(rs.getString("REALIZADA"))==0? true:false;
@@ -89,11 +89,11 @@ public class DAOFuncion {
 				double pV = Double.parseDouble(rs.getString("PRECIO_VIP"));
 				double pP = Double.parseDouble(rs.getString("PRECIO_PLATEA"));
 				double pG = Double.parseDouble(rs.getString("PRECIO_GENERAL"));
-				ArrayList<Boleta> bole = boleta.buscarBoletasPorFuncion(idE, fec);
+				ArrayList<Boleta> bole = boleta.buscarBoletasPorFuncion(idE, fecha);
 				funciones.add(new Funcion(fecha, rea, fest, idL, idE, bole, pV, pP,pG) );
 			}
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.err.println("SQLException in executing:");
 			e.printStackTrace();
 			throw e;
@@ -126,7 +126,7 @@ public class DAOFuncion {
 			while (rs.next()) 
 			{
 				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO"));
-				String fec = rs.getString("FECHA");
+				String fec = rs.getString("FECHA").substring(0, 10);
 				Date fechas = Date.valueOf(fec);
 				int idL = Integer.parseInt(rs.getString("ID_LUGAR"));
 				boolean rea = Integer.parseInt(rs.getString("REALIZADA"))==0? true:false;
@@ -134,7 +134,7 @@ public class DAOFuncion {
 				double pV = Double.parseDouble(rs.getString("PRECIO_VIP"));
 				double pP = Double.parseDouble(rs.getString("PRECIO_PLATEA"));
 				double pG = Double.parseDouble(rs.getString("PRECIO_GENERAL"));
-				ArrayList<Boleta> bole = boleta.buscarBoletasPorFuncion(idE, fec);
+				ArrayList<Boleta> bole = boleta.buscarBoletasPorFuncion(idE, fechas);
 				funcion=new Funcion(fechas, rea, fest, idL, idE, bole, pV, pP,pG) ;
 			}
 
@@ -158,8 +158,208 @@ public class DAOFuncion {
 		return funcion;
 	}
 
-	
-	
-	
+	public ArrayList<Funcion> buscarFuncionesPorLugar(int id) throws Exception {
+		PreparedStatement prepStmt = null;
+		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
 
+		try {
+			establecerConexion();
+			String sql = "SELECT * FROM FUNCION WHERE ID_LUGAR ='" +id + "'";
+			prepStmt = conexion.prepareStatement(sql);
+			ResultSet rs = prepStmt.executeQuery();
+			while (rs.next()) 	
+			{
+				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO"));
+				String fec = rs.getString("FECHA").substring(0, 10);
+				Date fecha = Date.valueOf(fec);
+				int idL = Integer.parseInt(rs.getString("ID_LUGAR"));
+				boolean rea = Integer.parseInt(rs.getString("REALIZADA"))==0? true:false;
+				String fest = rs.getString("FESTIVAL");
+				double pV = Double.parseDouble(rs.getString("PRECIO_VIP"));
+				double pP = Double.parseDouble(rs.getString("PRECIO_PLATEA"));
+				double pG = Double.parseDouble(rs.getString("PRECIO_GENERAL"));
+				ArrayList<Boleta> bole = boleta.buscarBoletasPorFuncion(idE, fecha);
+				funciones.add(new Funcion(fecha, rea, fest, idL, idE, bole, pV, pP,pG) );
+			}
+
+		} catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+		return funciones;	
+	}
+	
+	public ArrayList<Funcion> buscarFuncionesPorEspectaculo(int id) throws Exception {
+		PreparedStatement prepStmt = null;
+		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
+
+		try {
+			establecerConexion();
+			String sql = "SELECT * FROM FUNCION WHERE ID_ESPECTACULO ='" +id + "'";
+			prepStmt = conexion.prepareStatement(sql);
+			ResultSet rs = prepStmt.executeQuery();
+			while (rs.next()) 	
+			{
+				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO"));
+				String fec = rs.getString("FECHA").substring(0, 10);
+				Date fecha = Date.valueOf(fec);
+				int idL = Integer.parseInt(rs.getString("ID_LUGAR"));
+				boolean rea = Integer.parseInt(rs.getString("REALIZADA"))==0? true:false;
+				String fest = rs.getString("FESTIVAL");
+				double pV = Double.parseDouble(rs.getString("PRECIO_VIP"));
+				double pP = Double.parseDouble(rs.getString("PRECIO_PLATEA"));
+				double pG = Double.parseDouble(rs.getString("PRECIO_GENERAL"));
+				ArrayList<Boleta> bole = boleta.buscarBoletasPorFuncion(idE, fecha);
+				funciones.add(new Funcion(fecha, rea, fest, idL, idE, bole, pV, pP,pG) );
+			}
+
+		} catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+		return funciones;	
+	}
+	public ArrayList<Funcion> buscarFuncionesPorFestival(String nombre) throws Exception {
+		PreparedStatement prepStmt = null;
+		ArrayList<Funcion> funciones = new ArrayList<Funcion>();
+
+		try {
+			establecerConexion();
+			String sql = "SELECT * FROM FUNCION WHERE FESTIVAL ='" +nombre + "'";
+			prepStmt = conexion.prepareStatement(sql);
+			ResultSet rs = prepStmt.executeQuery();
+			while (rs.next()) 	
+			{
+				int idE = Integer.parseInt(rs.getString("ID_ESPECTACULO"));
+				String fec = rs.getString("FECHA").substring(0, 10);
+				Date fecha = Date.valueOf(fec);
+				int idL = Integer.parseInt(rs.getString("ID_LUGAR"));
+				boolean rea = Integer.parseInt(rs.getString("REALIZADA"))==0? true:false;
+				String fest = rs.getString("FESTIVAL");
+				double pV = Double.parseDouble(rs.getString("PRECIO_VIP"));
+				double pP = Double.parseDouble(rs.getString("PRECIO_PLATEA"));
+				double pG = Double.parseDouble(rs.getString("PRECIO_GENERAL"));
+				ArrayList<Boleta> bole = boleta.buscarBoletasPorFuncion(idE, fecha);
+				funciones.add(new Funcion(fecha, rea, fest, idL, idE, bole, pV, pP,pG) );
+			}
+
+		} catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+		return funciones;	
+	}
+
+	public void marcarRealizada(int espectaculo, String fecha) throws Exception{
+		PreparedStatement prepStmt = null;
+
+		try {
+			establecerConexion();
+			String sql = "UPDATE FUNCION SET REALIZADA =1 WHERE  ID_ESPECTACULO = '"+espectaculo+"' AND FECHA ='" +fecha + "'";
+			prepStmt = conexion.prepareStatement(sql);
+			ResultSet rs = prepStmt.executeQuery();
+			
+
+		} catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+	}
+
+	public String buscarReporte(int espectaculo, String fecha) throws Exception {
+		PreparedStatement prepStmt = null;
+		String a = null;
+
+		try {
+			Funcion f =buscarFuncionPK(fecha, espectaculo);
+			ArrayList<Boleta> boletas = f.getClientes();
+			int cP = 0;
+			int cV = 0;
+			int cG = 0;
+			for(int i = 0 ; i<boletas.size();i++ )
+			{
+				Boleta esta = boletas.get(i);
+				if(esta.getLocalidad().equals("Platea"))
+					cP++;
+				else if(esta.getLocalidad().equals("General"))
+					cG++;
+				else if(esta.getLocalidad().equals("VIP"))
+					cV++;				
+			}
+				
+			a = boletas.size()+"-"+cP+"/"+f.getPrecioPlatea()+"-"+cG+"/"+ f.getPrecioGeneral()+"-"+cV+"/"+f.getPrecioVip();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+		return a;
+	}
+		
+	
 }
