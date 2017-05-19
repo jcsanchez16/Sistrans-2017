@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -146,6 +147,7 @@ public class DAOBoleta {
 		}
 		return b;
 	}
+	
 public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throws Exception {
 		
 		PreparedStatement prepStmt = null;
@@ -184,7 +186,6 @@ public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throw
 
 	public String añadirBoleta(int id, int espectaculo, String fecha, String tipo) throws Exception {
 		PreparedStatement prepStmt = null;	
-
 		String esp = null;
 		try {
 			DAOFuncion funciones = new DAOFuncion(conectionData);
@@ -205,6 +206,101 @@ public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throw
 				prepStmt = conexion.prepareStatement(sql);
 				prepStmt.execute();
 				esp = "se realizo la reserva";
+			}
+
+		} catch (Exception e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+		return esp;
+	}
+
+	public String añadirAbono(int id, String espectaculos, String fechas, String tipos, String fest) throws NumberFormatException, Exception {
+		
+		String [] espec = espectaculos.split("/");
+		String [] fec = fechas .split("/");
+		String [] tip = tipos.split("/");
+		String resp = null;
+		PreparedStatement prepStmt = null;
+		try {
+			establecerConexion();
+			conexion.setAutoCommit(false);
+			Savepoint save =conexion.setSavepoint();
+			String sql = "SELECT * FROM FESTIVALES WHERE NOMBRE ='" + fest + "''";
+			prepStmt = conexion.prepareStatement(sql);
+			ResultSet rs = prepStmt.executeQuery();
+			Date fechaI = null;
+			while (rs.next()) {
+				fechaI = new Date(Date.valueOf(rs.getString("FECHA_INICIO").substring(0, 10)).getTime()-1814400000);
+			}
+			if (fechaI.before(new java.util.Date()))
+				resp = "Fecha limite para compra de abono superada";
+			else
+			{
+				boolean bien  = true;
+				for(int i  = 0 ; i< espec.length && bien ; i ++)
+				{
+					resp =añadirBoleta(id, Integer.parseInt(espec[i]), fec[i], tip[i]);
+					if (!resp.equals("se realizo la reserva"))
+					{
+						conexion.rollback(save);					
+						bien = false ;
+					}				
+				}
+				if(!bien)
+					resp = "fallo la compra";
+			}
+		
+
+		} catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			conexion.setAutoCommit(true);
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+		return resp;
+	}
+
+	public String devolverBoleta(int id, int espectaculo, String fecha, boolean b) throws Exception {
+		PreparedStatement prepStmt = null;	
+		String esp = null;
+		try {
+			DAOFuncion funciones = new DAOFuncion(conectionData);
+			Date fechaI = new Date(funciones.buscarFuncionPK(fecha, espectaculo).getFecha().getTime()-432000000);		
+			if (fechaI.before(new java.util.Date())&& b)
+				esp = "Fecha limite para devolucion boleta superada";
+			else
+			{
+				establecerConexion();
+				String sql = "DELETE FROM BOLETAS WHERE  ID_ESPECTACULO_FUNCION ='" + espectaculo + "' AND FECHA_FUNCION ='"+fecha+"' AND ID_USUARIO ='" + id + "'";
+				prepStmt = conexion.prepareStatement(sql);
+				prepStmt.execute();
+				esp = "se elimino la reserva";
 			}
 
 		} catch (Exception e) {

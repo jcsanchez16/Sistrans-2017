@@ -77,11 +77,11 @@ public class RequerimientosServices
 	@PUT
 	@Path("/RF11")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response RF11(@QueryParam("id") int id,@QueryParam("espectaculos") int espectaculos, @QueryParam("fechas") String fechas,@QueryParam("tipos") String tipos) {
+	public Response RF11(@QueryParam("id") int id,@QueryParam("espectaculos") String espectaculos, @QueryParam("fechas") String fechas,@QueryParam("tipos") String tipos,@QueryParam("festival") String fest) {
 		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
 		String a = "No se pudo comprar el abonamiento";
 		try {
-			 a =  master.RF11(id,espectaculos, fechas, tipos);
+			 a =  master.RF11(id,espectaculos, fechas, tipos, fest);
 		} catch (Exception e) {
 			String temp = null;
 			temp=e.getMessage();
@@ -109,10 +109,9 @@ public class RequerimientosServices
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response RF14(@QueryParam("espectaculo") int espectaculo, @QueryParam("fecha") String fecha) {
 		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
-		String a = "No se marco como realizada";
+		String a = "No se cancelo la funcion";
 		try {
-			 master.RF14(espectaculo, fecha);
-			 a = "Se marco como realizada";
+			 a = master.RF14(espectaculo, fecha);
 		} catch (Exception e) {
 			String temp = null;
 			temp=e.getMessage();

@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -359,6 +360,47 @@ public class DAOFuncion {
 				closeConnection(this.conexion);
 		}
 		return a;
+	}
+
+	public String cancelarFuncion(int espectaculo, String fecha) throws Exception {
+		String resp = null;
+		PreparedStatement prepStmt = null;
+		ArrayList<Boleta> boletas = boleta.buscarBoletasPorFuncion(espectaculo, Date.valueOf(fecha));
+		try {
+			establecerConexion();
+			conexion.setAutoCommit(false);
+			Savepoint save =conexion.setSavepoint();
+			boolean bien  = true;
+			for( int i = 0 ; i < boletas.size()&& bien;i++)
+			{
+				resp =boleta.devolverBoleta(boletas.get(i).getUsuario(), espectaculo, fecha, false);
+				if (!resp.equals("se elimino la reserva"))
+				{
+					conexion.rollback(save);					
+					bien = false ;
+				}				
+			}
+			if(!bien)
+				resp = "fallo la cancelacion";
+		} catch (SQLException e) {
+			System.err.println("SQLException in executing:");
+			e.printStackTrace();
+			throw e;
+		} finally {
+			conexion.setAutoCommit(true);
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException in closing Stmt:");
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			if (this.conexion != null)
+				closeConnection(this.conexion);
+		}
+		return resp;
 	}
 		
 	

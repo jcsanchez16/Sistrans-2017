@@ -155,9 +155,19 @@ public Funcion darFuncionesPk(int id,String fecha) throws Exception {
 		return daoUsuarios.darClientesMayorBoletas();
 	}
 
-	public String RF11(int id, int espectaculos, String fechas, String tipos) 
+	public String RF11(int id, String espectaculos, String fechas, String tipos, String fest) throws NumberFormatException, Exception 
 	{
-		
-		return null;
+		daoBoleta = daoBoleta== null ? new DAOBoleta(connectionDataPath): daoBoleta;
+		return daoBoleta.añadirAbono(id,espectaculos, fechas, tipos, fest);	
+	}
+
+	public String RF12(int id, int espectaculo, String fecha) throws Exception {
+		daoBoleta = daoBoleta== null ? new DAOBoleta(connectionDataPath): daoBoleta;
+		return daoBoleta.devolverBoleta(id,espectaculo, fecha, true);	
+	}
+
+	public String RF14(int espectaculo, String fecha) throws Exception {
+		daoFuncion = daoFuncion == null ? new DAOFuncion(connectionDataPath) : daoFuncion;
+		return daoFuncion.cancelarFuncion(espectaculo, fecha);
 	}
 }
