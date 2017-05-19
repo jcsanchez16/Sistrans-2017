@@ -74,6 +74,53 @@ public class RequerimientosServices
 		}
 		return Response.status(200).entity(a).build();
 	}
+	@PUT
+	@Path("/RF11")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response RF11(@QueryParam("id") int id,@QueryParam("espectaculos") int espectaculos, @QueryParam("fechas") String fechas,@QueryParam("tipos") String tipos) {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+		String a = "No se pudo comprar el abonamiento";
+		try {
+			 a =  master.RF11(id,espectaculos, fechas, tipos);
+		} catch (Exception e) {
+			String temp = null;
+			temp=e.getMessage();
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
+	@PUT
+	@Path("/RF12")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response RF12(@QueryParam("id") int id,@QueryParam("espectaculo") int espectaculo, @QueryParam("fecha") String fecha) {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+		String a = "No se devolvio la boleta";
+		try {
+			 a = master.RF12(id,espectaculo, fecha);
+		} catch (Exception e) {
+			String temp = null;
+			temp=e.getMessage();
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
+	@PUT
+	@Path("/RF14")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response RF14(@QueryParam("espectaculo") int espectaculo, @QueryParam("fecha") String fecha) {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+		String a = "No se marco como realizada";
+		try {
+			 master.RF14(espectaculo, fecha);
+			 a = "Se marco como realizada";
+		} catch (Exception e) {
+			String temp = null;
+			temp=e.getMessage();
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
+	
 	@GET
 	@Path("/RFC3")
 	@Produces({ MediaType.APPLICATION_JSON })
@@ -87,6 +134,22 @@ public class RequerimientosServices
 			String[] v = b[3].split("/");
 			
 			a= "Se vendieron "+ b[0]+"boletas. De localidad Platea fueron "+ p[0]+ " dando ganancia de "+ (Integer.parseInt(p[0])*Integer.parseInt(p[1]))+"De localidad General fueron "+ g[0]+ " dando ganancia de "+ (Integer.parseInt(g[0])*Integer.parseInt(g[1]))+ " De localidad VIP fueron "+ v[0]+ " dando ganancia de "+ (Integer.parseInt(v[0])*Integer.parseInt(v[1]));
+		} catch (Exception e) {
+			String temp = null;
+			temp=e.getMessage();
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
+	@GET
+	@Path("/quiz")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response quiz() {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+		ArrayList<Cliente> a = null;
+		try {
+			a = master.quiz();
+
 		} catch (Exception e) {
 			String temp = null;
 			temp=e.getMessage();

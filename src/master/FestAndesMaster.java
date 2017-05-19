@@ -149,4 +149,15 @@ public Funcion darFuncionesPk(int id,String fecha) throws Exception {
 		daoFuncion = daoFuncion == null ? new DAOFuncion(connectionDataPath) : daoFuncion;
 		return daoFuncion.buscarReporte(espectaculo, fecha);
 	}
+
+	public ArrayList<Cliente> quiz() throws Exception {
+		daoUsuarios = daoUsuarios == null ? new DAOUsuarios(connectionDataPath) : daoUsuarios;
+		return daoUsuarios.darClientesMayorBoletas();
+	}
+
+	public String RF11(int id, int espectaculos, String fechas, String tipos) 
+	{
+		
+		return null;
+	}
 }

@@ -232,4 +232,25 @@ public class DAOUsuarios {
 				closeConnection(this.conexion);
 		}
 	}
+
+	public ArrayList<Cliente> darClientesMayorBoletas() throws Exception 
+	{
+		ArrayList<Cliente> clientes = darClientes();
+		ArrayList<Cliente> resp = new ArrayList<Cliente>();
+		int mayor = 0;
+		for (int i = 0;i<clientes.size();i++)
+		{
+			Cliente este = clientes.get(i);
+			int boletas = este.getBoletas().size();
+			if(boletas == mayor)
+				resp.add(este);
+			else if(boletas > mayor)
+			{
+				resp = new ArrayList<Cliente>();
+				resp.add(este);
+				mayor = boletas;
+			}
+		}
+		return resp;
+	}
 }
