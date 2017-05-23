@@ -90,8 +90,8 @@ public class DAOEspectaculos {
 
 		try {
 			establecerConexion();
-			String sql = "SELECT * FROM ESPECRES";
-			prepStmt = conexion.prepareStatement(sql);
+			String sql1 = "SELECT * FROM ESPECRES";
+			prepStmt = conexion.prepareStatement(sql1);
 			ResultSet rs = prepStmt.executeQuery();
 			while (rs.next()) {
 				

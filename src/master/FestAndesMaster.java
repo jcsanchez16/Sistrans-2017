@@ -61,6 +61,7 @@ public class FestAndesMaster {
 
 	private FestAndesMaster(String contextPathP) 
 	{
+		dtm = FestAndesDistributed.getInstance(this);
 		connectionDataPath = contextPathP + CONNECTION_DATA_FILE_NAME_REMOTE;
 		daoBoleta = new DAOBoleta(connectionDataPath);
 		daoFuncion = new DAOFuncion(connectionDataPath);
