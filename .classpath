@@ -3,8 +3,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jms"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jackson-all-1.7.5.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jc.sanchez16/Sistrans-2017/WebContent/WEB-INF/lib/javax.servlet-3.0.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/javax.ws.rs.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/WildFly 10.0 Runtime">
 		<attributes>
@@ -17,5 +18,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="amqp-client-3.6.5.jar" sourcepath="/home/andfoy/.m2/repository/com/rabbitmq/amqp-client/3.6.5/amqp-client-3.6.5-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jc.sanchez16/Sistrans-2017/WebContent/WEB-INF/lib/rabbitmq-jms-1.6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="geronimo-jms_1.1_spec-1.1.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -113,6 +113,7 @@ public class DAOUsuarios {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return clientes;
 	}
@@ -150,6 +151,7 @@ public class DAOUsuarios {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return representantes;
 	}
@@ -198,6 +200,7 @@ public class DAOUsuarios {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return usuario;
 	}
@@ -230,6 +233,7 @@ public class DAOUsuarios {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 	}
 

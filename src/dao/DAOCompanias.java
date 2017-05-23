@@ -116,6 +116,7 @@ public class DAOCompanias {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return companias;
 	}
@@ -159,6 +160,7 @@ public class DAOCompanias {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return compania;
 	}
@@ -192,6 +194,7 @@ public class DAOCompanias {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return companias;
 	}
@@ -225,6 +228,7 @@ public class DAOCompanias {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return compania;
 	}

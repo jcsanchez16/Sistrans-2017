@@ -90,7 +90,7 @@ public class DAOEspectaculos {
 
 		try {
 			establecerConexion();
-			String sql = "SELECT * FROM ESPECTACULOS";
+			String sql = "SELECT * FROM ESPECRES";
 			prepStmt = conexion.prepareStatement(sql);
 			ResultSet rs = prepStmt.executeQuery();
 			while (rs.next()) {
@@ -128,6 +128,7 @@ public class DAOEspectaculos {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return espectaculos;
 	}
@@ -176,6 +177,7 @@ public class DAOEspectaculos {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return es;
 	}
@@ -208,6 +210,7 @@ public class DAOEspectaculos {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return espectaculos;
 	}

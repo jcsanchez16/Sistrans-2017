@@ -13,11 +13,14 @@ import dao.DAOFestival;
 import dao.DAOFuncion;
 import dao.DAOLugares;
 import dao.DAOUsuarios;
+import dtm.FestAndesDistributed;
+import jms.NonReplyException;
 import vos.Cliente;
 import vos.CompaniaTeatro;
 import vos.Espectaculo;
 import vos.Festival;
 import vos.Funcion;
+import vos.ListaEspectaculo;
 import vos.Lugar;
 import vos.Representante;
 import vos.Usuario;
@@ -48,14 +51,17 @@ public class FestAndesMaster {
 	
 	private DAOFestival daoFestival;
 	
+	private FestAndesDistributed dtm;
+	
 	public static FestAndesMaster darInstancia(String contextPathP) {
 		connectionDataPath = contextPathP + CONNECTION_DATA_FILE_NAME_REMOTE;
-		instacia = instacia == null ? new FestAndesMaster() : instacia;
+		instacia = instacia == null ? new FestAndesMaster(contextPathP) : instacia;
 		return instacia;
 	}
 
-	private FestAndesMaster() 
+	private FestAndesMaster(String contextPathP) 
 	{
+		connectionDataPath = contextPathP + CONNECTION_DATA_FILE_NAME_REMOTE;
 		daoBoleta = new DAOBoleta(connectionDataPath);
 		daoFuncion = new DAOFuncion(connectionDataPath);
 		daoCompanias = new DAOCompanias(connectionDataPath);
@@ -169,5 +175,21 @@ public Funcion darFuncionesPk(int id,String fecha) throws Exception {
 	public String RF14(int espectaculo, String fecha) throws Exception {
 		daoFuncion = daoFuncion == null ? new DAOFuncion(connectionDataPath) : daoFuncion;
 		return daoFuncion.cancelarFuncion(espectaculo, fecha);
+	}
+
+	public ListaEspectaculo RFC13() throws Exception
+	{
+		ListaEspectaculo loc = new ListaEspectaculo(darEspectaculos());
+		try
+		{
+			ListaEspectaculo resp = dtm.getRemoteEspectaculos();
+			System.out.println(resp.getLista().size());
+			loc.getLista().addAll(resp.getLista());
+		}
+		catch(NonReplyException e)
+		{
+			
+		}
+		return loc;
 	}
 }

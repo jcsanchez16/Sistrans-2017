@@ -110,6 +110,7 @@ public class DAOFuncion {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return funciones;
 	}
@@ -155,6 +156,7 @@ public class DAOFuncion {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return funcion;
 	}
@@ -199,6 +201,7 @@ public class DAOFuncion {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return funciones;	
 	}
@@ -243,6 +246,7 @@ public class DAOFuncion {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return funciones;	
 	}
@@ -286,6 +290,7 @@ public class DAOFuncion {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return funciones;	
 	}
@@ -316,6 +321,7 @@ public class DAOFuncion {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 	}
 
@@ -358,6 +364,7 @@ public class DAOFuncion {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return a;
 	}
@@ -399,6 +406,7 @@ public class DAOFuncion {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return resp;
 	}

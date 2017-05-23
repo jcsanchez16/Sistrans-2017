@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import master.FestAndesMaster;
 import vos.Cliente;
+import vos.ListaEspectaculo;
 import vos.Lugar;
 import vos.Representante;
 import vos.Usuario;
@@ -151,6 +152,23 @@ public class RequerimientosServices
 
 		} catch (Exception e) {
 			String temp = null;
+			temp=e.getMessage();
+			return Response.status(500).entity(temp).build();
+		}
+		return Response.status(200).entity(a).build();
+	}
+	@GET
+	@Path("/RFC13")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response RFC13() {
+		FestAndesMaster master = FestAndesMaster.darInstancia(getPath());
+		ListaEspectaculo a = null;
+		try {
+			a = master.RFC13();	
+		} catch (Exception e) {
+			String temp = null;
+			e.printStackTrace();
+		
 			temp=e.getMessage();
 			return Response.status(500).entity(temp).build();
 		}

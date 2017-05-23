@@ -121,6 +121,7 @@ public class DAOLugares {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return lugares;
 	}
@@ -173,6 +174,7 @@ public class DAOLugares {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return l;
 	}

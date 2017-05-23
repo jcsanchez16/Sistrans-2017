@@ -97,6 +97,7 @@ public class DAOCondiciones {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return condiciones;
 	}
@@ -131,6 +132,7 @@ public class DAOCondiciones {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return condiciones;
 	}
@@ -165,6 +167,7 @@ public ArrayList<String> buscarCondicionesPorEspectaculo(int idl) throws Excepti
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return condiciones;
 	}

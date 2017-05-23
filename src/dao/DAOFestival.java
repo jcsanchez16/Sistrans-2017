@@ -108,6 +108,7 @@ public class DAOFestival {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return festivales;
 	}
@@ -145,6 +146,7 @@ public class DAOFestival {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return l;
 	}

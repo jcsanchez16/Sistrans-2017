@@ -105,6 +105,8 @@ public class DAOBoleta {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
+			
 		}
 		return b;
 	}
@@ -144,6 +146,7 @@ public class DAOBoleta {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return b;
 	}
@@ -180,6 +183,7 @@ public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throw
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return contador;
 	}
@@ -224,6 +228,7 @@ public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throw
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return esp;
 	}
@@ -282,6 +287,7 @@ public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throw
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return resp;
 	}
@@ -319,6 +325,7 @@ public int buscarBoletasPorFuncionTipo(int idE, String fecha, String tipo) throw
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return esp;
 	}

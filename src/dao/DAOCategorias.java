@@ -97,6 +97,7 @@ public class DAOCategorias {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return condiciones;
 	}
@@ -131,6 +132,7 @@ public class DAOCategorias {
 			}
 			if (this.conexion != null)
 				closeConnection(this.conexion);
+			conexion.close();
 		}
 		return categorias;
 	}
